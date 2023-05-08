@@ -27,6 +27,14 @@ def try_float(data): # it turn a string into float if it can
     except:
         return data
 
+def quantile(data, q): # calculate the quantile of a given array
+    data = sorted(data)
+    index = q * (len(data) - 1)
+    if index.is_integer():
+        return arr[int(index)]
+    else:
+        return (arr[int(index)] + arr[int(index) + 1]) / 2
+
 ###############################################
 ###########    List Creation     ##############
 ###############################################
