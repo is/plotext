@@ -523,16 +523,20 @@ class monitor_class(build_class):
             d = i
             arr = data[i]
             q1, q3, h, l = ut.quantile(arr, 0.25), ut.quantile(arr, 0.70), max(arr), min(arr)
+            mean = ut.quantile(arr, 0.5)
+            E = mean
             m, M = q1, q3
             lab = label if i == 0 else None
             if orientation in ['v', 'vertical']:
                 self.draw([d, d], [M, h], xside = xside, yside = yside, color = color, marker = markers[1], lines = True)
                 self.draw([d, d], [l, m], xside = xside, yside = yside, color = color, marker = markers[1], lines = True)
                 self.draw([d, d], [m, M], xside = xside, yside = yside, color = color, marker = markers[0], lines = True, label = lab)
+                self.draw([d, d], [E, E], xside = xside, yside = yside, color = 'red', marker = markers[0], lines = True)
             elif orientation in ['h', 'horizontal']:
                 self.draw([M, h], [d, d], xside = xside, yside = yside, color = color, marker = markers[2], lines = True)
                 self.draw([l, m], [d, d], xside = xside, yside = yside, color = color, marker = markers[2], lines = True)
                 self.draw([m, M], [d, d], xside = xside, yside = yside, color = color, marker = markers[0], lines = True, label = lab)
+                self.draw([E, E], [d, d], xside = xside, yside = yside, color = 'red', marker = markers[0], lines = True)
 
 
     def draw_candlestick(self, dates, data, xside = None, yside = None, orientation = None, colors = None, label = None):
