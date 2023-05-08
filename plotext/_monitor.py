@@ -498,6 +498,43 @@ class monitor_class(build_class):
                       minimum = None,
                       reset_ticks = False)
 
+    def draw_box(self, *args, xside = None, yside = None, orientation = None, color = None, label = None):
+        x = args[0]
+        data = args[1]
+        orientation = self.check_orientation(orientation, 1)
+
+        reset_ticks = True
+        offset = 0
+        l = len(x)
+        x_string = any([type(el) == str for el in x]) # if x are strings
+        #xticks = range(1, l + 1) if x_string else x
+        xticks = range(l)
+        xlabels = x if x_string else map(str, x)
+        print(xlabels)
+        x = xticks if x_string else x
+        x = [el + offset for el in x]
+        (self.set_xticks(xticks, xlabels, xside) if orientation[0] == 'v' else self.set_yticks(xticks, xlabels, yside)) if reset_ticks else None
+
+        markers = ['sd', '│', '─'] #if markers is None else markers
+        ln = len(data)
+        color = 'green' if color is None else color
+        for i in range(ln):
+            #d = dates[i]
+            d = i
+            arr = data[i]
+            q1, q3, h, l = ut.quantile(arr, 0.25), ut.quantile(arr, 0.70), max(arr), min(arr)
+            m, M = q1, q3
+            lab = label if i == 0 else None
+            if orientation in ['v', 'vertical']:
+                self.draw([d, d], [M, h], xside = xside, yside = yside, color = color, marker = markers[1], lines = True)
+                self.draw([d, d], [l, m], xside = xside, yside = yside, color = color, marker = markers[1], lines = True)
+                self.draw([d, d], [m, M], xside = xside, yside = yside, color = color, marker = markers[0], lines = True, label = lab)
+            elif orientation in ['h', 'horizontal']:
+                self.draw([M, h], [d, d], xside = xside, yside = yside, color = color, marker = markers[2], lines = True)
+                self.draw([l, m], [d, d], xside = xside, yside = yside, color = color, marker = markers[2], lines = True)
+                self.draw([m, M], [d, d], xside = xside, yside = yside, color = color, marker = markers[0], lines = True, label = lab)
+
+
     def draw_candlestick(self, dates, data, xside = None, yside = None, orientation = None, colors = None, label = None):
         orientation = self.check_orientation(orientation, 1)
         markers = ['sd', '│', '─'] #if markers is None else markers

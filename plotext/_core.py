@@ -184,6 +184,10 @@ def candlestick(dates, data, xside = None, yside = None, orientation = None, col
     _figure._active.candlestick(dates, data, xside = xside, yside = yside, orientation = orientation, colors = colors, label = label)
     _figure.show() if _figure._interactive else None
 
+def box(*args, xside = None, yside = None, orientation = None, color = None, label = None):
+    _figure._active.box(*args, xside = xside, yside = yside, orientation = orientation, color = color, label = label)
+    _figure.show() if _figure._interactive else None
+
 def bar(*args, xside = None, yside = None, marker = None, color = None, fill = None, width = None, orientation = None, label = None, minimum = None, reset_ticks = None):
     _figure._active.bar(*args, xside = xside, yside = yside, marker = marker, color = color, fill = fill, width = width, orientation = orientation, label = label, minimum = minimum, reset_ticks = reset_ticks)
     _figure.show() if _figure._interactive else None

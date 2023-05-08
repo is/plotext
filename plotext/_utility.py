@@ -31,9 +31,9 @@ def quantile(data, q): # calculate the quantile of a given array
     data = sorted(data)
     index = q * (len(data) - 1)
     if index.is_integer():
-        return arr[int(index)]
+        return data[int(index)]
     else:
-        return (arr[int(index)] + arr[int(index) + 1]) / 2
+        return (data[int(index)] + data[int(index) + 1]) / 2
 
 ###############################################
 ###########    List Creation     ##############
