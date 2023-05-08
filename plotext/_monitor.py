@@ -510,9 +510,9 @@ class monitor_class(build_class):
         #xticks = range(1, l + 1) if x_string else x
         xticks = range(l)
         xlabels = x if x_string else map(str, x)
-        print(xlabels)
         x = xticks if x_string else x
         x = [el + offset for el in x]
+        xticks = x
         (self.set_xticks(xticks, xlabels, xside) if orientation[0] == 'v' else self.set_yticks(xticks, xlabels, yside)) if reset_ticks else None
 
         markers = ['sd', '│', '─'] #if markers is None else markers
