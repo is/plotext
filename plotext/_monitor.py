@@ -532,18 +532,18 @@ class monitor_class(build_class):
                 self.draw([d, d], [M, h], xside = xside, yside = yside, color = color, marker = markers[1], lines = True)
                 self.draw([d, d], [l, m], xside = xside, yside = yside, color = color, marker = markers[1], lines = True)
                 self.draw_rectangle(xbar[i], [m, M], xside = xside, yside = yside,
-                    lines = True, color = color, fill = fill, label = lab)
+                    lines = True, color = color, fill = fill, marker = markers[0], label = lab)
                 self.draw_rectangle(xbar[i], [E, E], xside = xside, yside = yside,
-                    lines = True, color = mcolor, fill = fill, label = lab)
+                    lines = True, color = mcolor, fill = fill, marker = markers[2])
                 #self.draw([d, d], [m, M], xside = xside, yside = yside, color = color, marker = markers[0], lines = True, label = lab)
                 #self.draw(xbar[i], [E, E], xside = xside, yside = yside, color = mcolor, marker = markers[0], lines = False)
             elif orientation in ['h', 'horizontal']:
                 self.draw([M, h], [d, d], xside = xside, yside = yside, color = color, marker = markers[2], lines = True)
                 self.draw([l, m], [d, d], xside = xside, yside = yside, color = color, marker = markers[2], lines = True)
                 self.draw_rectangle([m, M], xbar[i], xside = xside, yside = yside,
-                    lines = True, color = color, fill = fill, label = lab)
+                    lines = True, color = color, fill = fill, marker = markers[0], label = lab)
                 self.draw_rectangle([E, E], xbar[i], xside = xside, yside = yside,
-                    lines = True, color = mcolor, fill = fill, label = lab)
+                    lines = True, color = mcolor, fill = fill, marker = markers[1])
                 #self.draw([m, M], [d, d], xside = xside, yside = yside, color = color, marker = markers[0], lines = True, label = lab)
                 #self.draw([E, E], [d, d], xside = xside, yside = yside, color = 'red', marker = markers[0], lines = True)
 
