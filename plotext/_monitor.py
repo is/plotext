@@ -498,46 +498,94 @@ class monitor_class(build_class):
                       minimum = None,
                       reset_ticks = False)
 
-    def draw_box(self, *args, xside = None, yside = None, orientation = None, color = None, label = None):
-        x = args[0]
-        data = args[1]
+    def draw_box(self, *args, xside = None, yside = None, orientation = None, colors = None, label = None, fill = None, width = None, minimum = None, offset = None, reset_ticks = None):
+        x, y = ut.set_data(*args)
+        fill = self.default.bar_fill if fill is None else fill
+        width = self.default.bar_width if width is None else width
+        width = 1 if width > 1 else 0 if width < 0 else width
         orientation = self.check_orientation(orientation, 1)
+        minimum = 0 if minimum is None else minimum
+        offset = 0 if offset is None else offset
+        reset_ticks = True if reset_ticks is None else reset_ticks
+        colors = ['green', 'red'] if colors is None else colors
 
-        reset_ticks = True
-        offset = 0
-        l = len(x)
         x_string = any([type(el) == str for el in x]) # if x are strings
-        #xticks = range(1, l + 1) if x_string else x
-        xticks = range(l)
+        l = len(x)
+        xticks = range(1, l + 1) if x_string else x
         xlabels = x if x_string else map(str, x)
         x = xticks if x_string else x
         x = [el + offset for el in x]
-        xticks = x
+        q1, q2, q3, max_,  min_, c, xbar = ut.box(x, y, width, minimum)
+        # xbar, ybar = ut.bars(x, y, width, minimum)
+        # xbar, ybar = [xbar, ybar]  if orientation[0] == 'v' else [ybar, xbar]
         (self.set_xticks(xticks, xlabels, xside) if orientation[0] == 'v' else self.set_yticks(xticks, xlabels, yside)) if reset_ticks else None
 
         markers = ['sd', '│', '─'] #if markers is None else markers
-        ln = len(data)
-        color = 'green' if color is None else color
-        for i in range(ln):
-            #d = dates[i]
-            d = i
-            arr = data[i]
-            q1, q3, h, l = ut.quantile(arr, 0.25), ut.quantile(arr, 0.70), max(arr), min(arr)
-            mean = ut.quantile(arr, 0.5)
-            E = mean
-            m, M = q1, q3
+        for i in range(l):
             lab = label if i == 0 else None
+            color = colors[0]
+            mcolor = colors[1]
+            d, l, h, m, E, M = c[i], min_[i], max_[i], q1[i], q2[i], q3[i]
+            Ew = (M - m) / 30
+
             if orientation in ['v', 'vertical']:
                 self.draw([d, d], [M, h], xside = xside, yside = yside, color = color, marker = markers[1], lines = True)
                 self.draw([d, d], [l, m], xside = xside, yside = yside, color = color, marker = markers[1], lines = True)
-                self.draw([d, d], [m, M], xside = xside, yside = yside, color = color, marker = markers[0], lines = True, label = lab)
-                self.draw([d, d], [E, E], xside = xside, yside = yside, color = 'red', marker = markers[0], lines = True)
+                self.draw_rectangle(xbar[i], [m, M], xside = xside, yside = yside,
+                    lines = True, color = color, fill = fill, label = lab)
+                self.draw_rectangle(xbar[i], [E, E], xside = xside, yside = yside,
+                    lines = True, color = mcolor, fill = fill, label = lab)
+                #self.draw([d, d], [m, M], xside = xside, yside = yside, color = color, marker = markers[0], lines = True, label = lab)
+                #self.draw(xbar[i], [E, E], xside = xside, yside = yside, color = mcolor, marker = markers[0], lines = False)
             elif orientation in ['h', 'horizontal']:
                 self.draw([M, h], [d, d], xside = xside, yside = yside, color = color, marker = markers[2], lines = True)
                 self.draw([l, m], [d, d], xside = xside, yside = yside, color = color, marker = markers[2], lines = True)
-                self.draw([m, M], [d, d], xside = xside, yside = yside, color = color, marker = markers[0], lines = True, label = lab)
-                self.draw([E, E], [d, d], xside = xside, yside = yside, color = 'red', marker = markers[0], lines = True)
+                self.draw_rectangle([m, M], xbar[i], xside = xside, yside = yside,
+                    lines = True, color = color, fill = fill, label = lab)
+                self.draw_rectangle([E, E], xbar[i], xside = xside, yside = yside,
+                    lines = True, color = mcolor, fill = fill, label = lab)
+                #self.draw([m, M], [d, d], xside = xside, yside = yside, color = color, marker = markers[0], lines = True, label = lab)
+                #self.draw([E, E], [d, d], xside = xside, yside = yside, color = 'red', marker = markers[0], lines = True)
 
+    # def draw_box_2(self, *args, xside = None, yside = None, orientation = None, color = None, label = None):
+    #     x = args[0]
+    #     data = args[1]
+    #     orientation = self.check_orientation(orientation, 1)
+
+    #     reset_ticks = True
+    #     offset = 0
+    #     l = len(x)
+    #     x_string = any([type(el) == str for el in x]) # if x are strings
+    #     #xticks = range(1, l + 1) if x_string else x
+    #     xticks = range(l)
+    #     xlabels = x if x_string else map(str, x)
+    #     x = xticks if x_string else x
+    #     x = [el + offset for el in x]
+    #     xticks = x
+    #     (self.set_xticks(xticks, xlabels, xside) if orientation[0] == 'v' else self.set_yticks(xticks, xlabels, yside)) if reset_ticks else None
+
+    #     markers = ['sd', '│', '─'] #if markers is None else markers
+    #     ln = len(data)
+    #     color = 'green' if color is None else color
+    #     for i in range(ln):
+    #         #d = dates[i]
+    #         d = i
+    #         arr = data[i]
+    #         q1, q3, h, l = ut.quantile(arr, 0.25), ut.quantile(arr, 0.70), max(arr), min(arr)
+    #         mean = ut.quantile(arr, 0.5)
+    #         E = mean
+    #         m, M = q1, q3
+    #         lab = label if i == 0 else None
+    #         if orientation in ['v', 'vertical']:
+    #             self.draw([d, d], [M, h], xside = xside, yside = yside, color = color, marker = markers[1], lines = True)
+    #             self.draw([d, d], [l, m], xside = xside, yside = yside, color = color, marker = markers[1], lines = True)
+    #             self.draw([d, d], [m, M], xside = xside, yside = yside, color = color, marker = markers[0], lines = True, label = lab)
+    #             self.draw([d, d], [E, E], xside = xside, yside = yside, color = 'red', marker = markers[0], lines = True)
+    #         elif orientation in ['h', 'horizontal']:
+    #             self.draw([M, h], [d, d], xside = xside, yside = yside, color = color, marker = markers[2], lines = True)
+    #             self.draw([l, m], [d, d], xside = xside, yside = yside, color = color, marker = markers[2], lines = True)
+    #             self.draw([m, M], [d, d], xside = xside, yside = yside, color = color, marker = markers[0], lines = True, label = lab)
+    #             self.draw([E, E], [d, d], xside = xside, yside = yside, color = 'red', marker = markers[0], lines = True)
 
     def draw_candlestick(self, dates, data, xside = None, yside = None, orientation = None, colors = None, label = None):
         orientation = self.check_orientation(orientation, 1)
